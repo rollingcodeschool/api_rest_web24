@@ -15,7 +15,7 @@ import {
 
 const router = Router();
 
-router.get("/", obtenerProductos);
+router.get("/",authenticate, obtenerProductos);
 
 router.post(
   "/",

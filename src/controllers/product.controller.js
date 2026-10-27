@@ -3,22 +3,33 @@ import Producto from "../models/Product.js";
 
 //obtener la lista de productos
 const obtenerProductos = async (req, res) => {
-  const { limite = 5, desde = 0 } = req.query;
+  //paginación
+  const { limite = 5, desde = 0 } = req.query; //0,1,2,3,
+  try {
+    const [total, productos] = await Promise.all([
+      Producto.countDocuments({ estado: true }),
+      Producto.find({ estado: true })
+        .limit(limite)
+        .skip(desde)
+        .populate("usuario", "username email role")
+        .populate("categoria", "nombre"),
+    ]);
 
-  const [total, productos] = await Promise.all([
-    Producto.countDocuments({ estado: true }),
-    Producto.find({ estado: true })
-      .limit(limite)
-      .skip(desde)
-      .populate("usuario", "username email role")
-      .populate("categoria", "nombre"),
-  ]);
-
-  res.json({
-    total,
-    productos,
-  });
+    return res.json({
+      total,
+      productos,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok:false,
+      message:error.message
+    })
 };
+}
+// Obtener un producto por su id
+const obtenerProductoPorId=(req, res)=>{
+
+}
 
 //crear un producto
 const crearProducto = async (req, res) => {
@@ -37,11 +48,11 @@ const crearProducto = async (req, res) => {
 
     const data = {
       nombre,
-      categoria,
+      categoria, //id que debo pasar
       precio,
       descripcion,
       img,
-      usuario: req.user._id,
+      usuario: req.user._id, //valido autenticate (token)
     };
 
     const producto = new Producto(data);
@@ -54,15 +65,16 @@ const crearProducto = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      erro: error.message,
+      ok:false,
+      message: error.message,
     });
   }
 };
 
-
 //actualizar un producto
 const actualizarProducto = async (req = request, res = response) => {
-  const { id } = req.params;
+  
+  const { id } =req.params
 
   const { precio, categoria, descripcion, disponible } = req.body;
   const usuario = req.user._id;
