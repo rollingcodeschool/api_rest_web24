@@ -6,43 +6,50 @@ import {
   handleValidationErrors,
   validarProductoPorId,
 } from "../middlewares/validators.js";
+import {
+  addItem,
+  deleteItem,
+  getItems,
+  updateCant,
+  deleteCart,
+} from "../controllers/cart.controller.js";
 
 //controladores
 
 const router = Router();
 
-router.get("/", authenticate, () => {});
+router.get("/", authenticate, getItems);
 router.post(
   "/",
   [
     authenticate,
-    check("productId").custom(validarProductoPorId),
+    check("productoId").custom(validarProductoPorId),
     check("cantidad")
       .notEmpty()
       .withMessage("La cantidad no puede estar vacia")
       .isInt({ min: 1 }),
     handleValidationErrors,
   ],
-  () => {},
+  addItem,
 );
 router.put(
-  "/:productId",
+  "/:productoId",
   [
     authenticate,
-    check("productId").isMongoId().withMessage("Debe ser un id válido"),
+    check("productoId").isMongoId().withMessage("Debe ser un id válido"),
     handleValidationErrors,
   ],
-  () => {},
+  updateCant,
 );
 router.delete(
-  "/:productId",
+  "/:productoId",
   [
     authenticate,
-    check("productId").isMongoId().withMessage("Debe ser un id válido"),
+    check("productoId").isMongoId().withMessage("Debe ser un id válido"),
     handleValidationErrors,
   ],
-  () => {},
+  deleteItem,
 );
-router.delete("/",authenticate, () => {});
+router.delete("/", authenticate, deleteCart);
 
 export default router;
