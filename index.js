@@ -4,8 +4,9 @@ import cookieParser from "cookie-parser";
 import { dbConnect } from "./src/config/database.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import categoryRoutes from "./src/routes/category.routes.js";
-import productRoutes from "./src/routes/product.routes.js"
-import cartRoutes from './src/routes/cart.routes.js'
+import productRoutes from "./src/routes/product.routes.js";
+import cartRoutes from "./src/routes/cart.routes.js";
+import mercadoRoutes from "./src/routes/mercado.routes.js";
 const app = express();
 const PORT = process.env.PORT || 4500;
 
@@ -17,8 +18,10 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/product", productRoutes);
-app.use("/api/cart",cartRoutes)
+app.use("/api/cart", cartRoutes);
 
+//MercadoPago
+app.use("/api/mercado", mercadoRoutes);
 
 await dbConnect();
 
