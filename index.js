@@ -7,6 +7,7 @@ import categoryRoutes from "./src/routes/category.routes.js";
 import productRoutes from "./src/routes/product.routes.js";
 import cartRoutes from "./src/routes/cart.routes.js";
 import mercadoRoutes from "./src/routes/mercado.routes.js";
+import searchRoutes from "./src/routes/search.routes.js";
 const app = express();
 const PORT = process.env.PORT || 4500;
 
@@ -22,6 +23,9 @@ app.use("/api/cart", cartRoutes);
 
 //MercadoPago
 app.use("/api/mercado", mercadoRoutes);
+
+//Buscador
+app.use("/api/search", searchRoutes);
 
 await dbConnect();
 
