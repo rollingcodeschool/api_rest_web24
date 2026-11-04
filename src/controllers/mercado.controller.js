@@ -2,20 +2,31 @@ import { MercadoPagoConfig, Preference, Payment } from "mercadopago";
 // import Mercado from "../models/Mercado.js";
 import PaymentMercado from "../models/PaymentData.js";
 
+//Agrego modelo de carrito
+import Cart from "../models/Cart.js";
+
 const cliente = new MercadoPagoConfig({
   accessToken: process.env.ACCESS_TOKEN,
 });
 
 export const postPreference = async (req, res) => {
   try {
+    const cart = await Cart.findOne({ usuario: req.user._id });
+
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({
+        ok: false,
+        message: "No hay productos en el carrito",
+      });
+    }
     const preference = new Preference(cliente);
 
     const response = await preference.create({
       body: {
         items: [
           {
-            title: "Producto de prueba",
-            unit_price: 100,
+            title: "Pago total",
+            unit_price: cart.total,
             quantity: 1,
             currency_id: "ARS",
           },
