@@ -1,7 +1,7 @@
 import { validationResult, check } from "express-validator";
 import User from "../models/User.js";
 import Categoria from "../models/category.js";
-import Producto from '../models/Product.js'
+import Producto from "../models/Product.js";
 
 export const handleValidationErrors = (req, res, next) => {
   //preguntar si no hay errores
@@ -123,4 +123,33 @@ export const validarProductoPorId = async (id) => {
   if (!existeProducto) {
     throw new Error("No existe un producto con ese id");
   }
+};
+
+//Validar tipo de archivo
+export const validateImageFile = (req, res, next) => {
+  //Validación si mandaron el archivo
+  if (!req.files || !req.files.archivo) {
+    return res.status(400).json({
+      ok: false,
+      message: "No hay archivos",
+    });
+  }
+
+  let file = req.files.archivo;
+  //file.mimetype
+
+  const formatosValidos = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+  ];
+
+  if (!formatosValidos.includes(file.mimetype)) {
+    return res.status(400).json({
+      ok: false,
+      message: "Solo se permiten imágenes (JPG, PNG, GIF, WEBP)",
+    });
+  }
+  next();
 };
